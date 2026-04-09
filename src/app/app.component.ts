@@ -26,21 +26,6 @@ import { TaskListComponent } from './components/task-list/task-list.component';
             </svg>
             <span class="brand-text">Task Manager</span>
           </div>
-          
-          <nav class="nav-links">
-            <a href="#" class="nav-link active">Dashboard</a>
-            <a href="#" class="nav-link">Projects</a>
-            <a href="#" class="nav-link">Settings</a>
-          </nav>
-
-          <div class="user-actions">
-            <button mat-icon-button class="icon-btn" aria-label="Notifications">
-              <mat-icon>notifications_none</mat-icon>
-            </button>
-            <div class="avatar">
-              <span>JD</span>
-            </div>
-          </div>
         </div>
       </header>
 
@@ -72,7 +57,7 @@ import { TaskListComponent } from './components/task-list/task-list.component';
       padding: 0 24px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-start;
     }
 
     .logo-group {
@@ -88,57 +73,6 @@ import { TaskListComponent } from './components/task-list/task-list.component';
       letter-spacing: -0.01em;
     }
 
-    .nav-links {
-      display: flex;
-      gap: 24px;
-      margin-left: 48px;
-      flex: 1;
-    }
-
-    .nav-link {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 500;
-      transition: color var(--transition);
-    }
-
-    .nav-link:hover {
-      color: var(--text-main);
-    }
-
-    .nav-link.active {
-      color: var(--text-main);
-    }
-
-    .user-actions {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .icon-btn {
-      color: var(--text-muted);
-    }
-
-    .icon-btn:hover {
-      color: var(--text-main);
-    }
-
-    .avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background-color: var(--primary-color);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
     .app-main {
       flex: 1;
       max-width: 1200px;
@@ -148,9 +82,6 @@ import { TaskListComponent } from './components/task-list/task-list.component';
     }
 
     @media (max-width: 768px) {
-      .nav-links {
-        display: none;
-      }
       .app-main {
         padding: 24px 16px;
       }

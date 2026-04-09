@@ -4,8 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
-import { MatCardModule } from '@angular/material/card';
-import { MatDividerModule } from '@angular/material/divider';
 import { Observable } from 'rxjs';
 import { Task } from '../../models/task.model';
 import { TaskService } from '../../services/task.service';
@@ -23,8 +21,6 @@ import { EmptyStateComponent } from '../empty-state/empty-state.component';
     MatButtonModule,
     MatIconModule,
     MatDialogModule,
-    MatCardModule,
-    MatDividerModule,
     TaskFormComponent,
     FilterPanelComponent,
     TaskCardComponent,
@@ -32,25 +28,25 @@ import { EmptyStateComponent } from '../empty-state/empty-state.component';
   ],
   template: `
     <div class="task-list-container">
-      <!-- Header with Create Task Button -->
-      <div class="header flex-between mb-3">
-        <div>
-          <h1>Tasks</h1>
-          <p class="task-count">{{ (tasks$ | async)?.length || 0 }} total tasks</p>
+      <!-- Header -->
+      <div class="page-header">
+        <div class="header-content">
+          <h1 class="page-title">Tasks</h1>
+          <p class="task-meta">{{ (tasks$ | async)?.length || 0 }} total tasks</p>
         </div>
-        <button mat-raised-button color="primary" (click)="openCreateTaskDialog()">
+        <button mat-button class="saas-btn new-task-btn" (click)="openCreateTaskDialog()">
           <mat-icon>add</mat-icon>
           New Task
         </button>
       </div>
 
-      <!-- Filter Panel -->
-      <app-filter-panel (filtersChanged)="onFiltersChanged($event)"></app-filter-panel>
+      <!-- Filters -->
+      <div class="section-container">
+        <app-filter-panel (filtersChanged)="onFiltersChanged($event)"></app-filter-panel>
+      </div>
 
-      <mat-divider class="mb-3"></mat-divider>
-
-      <!-- Task List -->
-      <div class="tasks-container">
+      <!-- Task Grid -->
+      <div class="tasks-container section-container">
         <ng-container *ngIf="(filteredTasks$ | async) as tasks">
           <ng-container *ngIf="tasks.length > 0; else emptyState">
             <div class="tasks-grid">
@@ -63,7 +59,9 @@ import { EmptyStateComponent } from '../empty-state/empty-state.component';
             </div>
           </ng-container>
           <ng-template #emptyState>
-            <app-empty-state [message]="'No tasks found. Create your first task!'"></app-empty-state>
+            <div class="saas-card empty-state-wrapper">
+              <app-empty-state [message]="'No tasks found. Create your first task!'"></app-empty-state>
+            </div>
           </ng-template>
         </ng-container>
       </div>
@@ -74,39 +72,55 @@ import { EmptyStateComponent } from '../empty-state/empty-state.component';
       width: 100%;
     }
 
-    .header {
+    .page-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 24px;
+      margin-bottom: 32px;
     }
 
-    .header h1 {
-      font-size: 28px;
-      font-weight: 500;
-      margin: 0;
-      margin-bottom: 4px;
+    .page-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin: 0 0 4px 0;
+      letter-spacing: -0.02em;
     }
 
-    .task-count {
+    .task-meta {
       font-size: 14px;
-      color: rgba(0, 0, 0, 0.6);
+      color: var(--text-muted);
       margin: 0;
+    }
+
+    .new-task-btn {
+      height: 40px !important;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .section-container {
+      margin-bottom: 32px;
     }
 
     .tasks-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .empty-state-wrapper {
+      padding: 64px 24px;
+      text-align: center;
     }
 
     @media (max-width: 768px) {
-      .header {
+      .page-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 16px;
       }
-
       .tasks-grid {
         grid-template-columns: 1fr;
       }
@@ -125,14 +139,13 @@ export class TaskListComponent implements OnInit {
     this.filteredTasks$ = this.taskService.getFilteredTasks();
   }
 
-  ngOnInit(): void {
-    // Load tasks on component initialization
-  }
+  ngOnInit(): void {}
 
   openCreateTaskDialog(): void {
     const dialogRef = this.dialog.open(TaskFormComponent, {
-      width: '600px',
+      width: '500px',
       maxWidth: '90vw',
+      panelClass: 'saas-dialog',
       data: { isEditing: false }
     });
 
@@ -141,8 +154,9 @@ export class TaskListComponent implements OnInit {
 
   onEditTask(task: Task): void {
     const dialogRef = this.dialog.open(TaskFormComponent, {
-      width: '600px',
+      width: '500px',
       maxWidth: '90vw',
+      panelClass: 'saas-dialog',
       data: { task, isEditing: true }
     });
 

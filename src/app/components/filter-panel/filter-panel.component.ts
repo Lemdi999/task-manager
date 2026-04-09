@@ -1,12 +1,8 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, HostListener, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatCardModule } from '@angular/material/card';
 import { TaskPriority, TaskStatus, TaskFilterOptions } from '../../models/task.model';
 
 @Component({
@@ -15,94 +11,241 @@ import { TaskPriority, TaskStatus, TaskFilterOptions } from '../../models/task.m
   imports: [
     CommonModule,
     FormsModule,
-    MatFormFieldModule,
-    MatSelectModule,
     MatButtonModule,
-    MatIconModule,
-    MatInputModule,
-    MatCardModule
+    MatIconModule
   ],
   template: `
-    <mat-card class="filter-panel">
-      <div class="filter-content">
-        <div class="filter-group">
-          <mat-form-field appearance="fill">
-            <mat-label>Priority</mat-label>
-            <mat-select [(value)]="selectedPriority" (selectionChange)="onFilterChange()">
-              <mat-option [value]="null">All Priorities</mat-option>
-              <mat-option *ngFor="let priority of priorities" [value]="priority">
-                {{ priority | titlecase }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+    <div class="filter-wrapper">
+      <div class="search-box">
+        <mat-icon class="search-icon">search</mat-icon>
+        <input 
+          type="text" 
+          class="minimal-input" 
+          placeholder="Search tasks..." 
+          [(ngModel)]="searchTerm" 
+          (input)="onFilterChange()">
+      </div>
+      
+      <div class="filter-controls">
+        <!-- Custom Priority Dropdown -->
+        <div class="custom-select-container">
+          <button class="custom-select-trigger" (click)="togglePriority()" [class.active]="isPriorityOpen">
+            <span>{{ selectedPriority ? (selectedPriority | titlecase) : 'All Priorities' }}</span>
+            <mat-icon class="dropdown-icon" [class.rotated]="isPriorityOpen">expand_more</mat-icon>
+          </button>
+          
+          <div class="custom-select-menu" *ngIf="isPriorityOpen">
+            <div class="custom-option" [class.selected]="selectedPriority === null" (click)="selectPriority(null)">
+              <span>All Priorities</span>
+              <mat-icon *ngIf="selectedPriority === null" class="check-icon">check</mat-icon>
+            </div>
+            <div class="custom-option" *ngFor="let priority of priorities" 
+                 [class.selected]="selectedPriority === priority" 
+                 (click)="selectPriority(priority)">
+              <span>{{ priority | titlecase }}</span>
+              <mat-icon *ngIf="selectedPriority === priority" class="check-icon">check</mat-icon>
+            </div>
+          </div>
         </div>
 
-        <div class="filter-group">
-          <mat-form-field appearance="fill">
-            <mat-label>Status</mat-label>
-            <mat-select [(value)]="selectedStatus" (selectionChange)="onFilterChange()">
-              <mat-option [value]="null">All Statuses</mat-option>
-              <mat-option *ngFor="let status of statuses" [value]="status">
-                {{ formatStatus(status) }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+        <!-- Custom Status Dropdown -->
+        <div class="custom-select-container">
+          <button class="custom-select-trigger" (click)="toggleStatus()" [class.active]="isStatusOpen">
+            <span>{{ selectedStatus ? formatStatus(selectedStatus) : 'All Statuses' }}</span>
+            <mat-icon class="dropdown-icon" [class.rotated]="isStatusOpen">expand_more</mat-icon>
+          </button>
+          
+          <div class="custom-select-menu" *ngIf="isStatusOpen">
+            <div class="custom-option" [class.selected]="selectedStatus === null" (click)="selectStatus(null)">
+              <span>All Statuses</span>
+              <mat-icon *ngIf="selectedStatus === null" class="check-icon">check</mat-icon>
+            </div>
+            <div class="custom-option" *ngFor="let status of statuses" 
+                 [class.selected]="selectedStatus === status" 
+                 (click)="selectStatus(status)">
+              <span>{{ formatStatus(status) }}</span>
+              <mat-icon *ngIf="selectedStatus === status" class="check-icon">check</mat-icon>
+            </div>
+          </div>
         </div>
 
-        <div class="filter-group">
-          <mat-form-field appearance="fill">
-            <mat-label>Search</mat-label>
-            <input matInput placeholder="Search tasks..." [(ngModel)]="searchTerm" (input)="onFilterChange()">
-            <mat-icon matPrefix>search</mat-icon>
-          </mat-form-field>
-        </div>
-
-        <button mat-stroked-button (click)="resetFilters()" class="reset-btn">
-          <mat-icon>clear</mat-icon>
-          Clear Filters
+        <button *ngIf="hasActiveFilters()" mat-button class="clear-btn" (click)="resetFilters()">
+          Clear
         </button>
       </div>
-    </mat-card>
+    </div>
   `,
   styles: [`
-    .filter-panel {
-      background-color: #fafafa;
-      padding: 16px;
-      margin-bottom: 16px;
-    }
-
-    .filter-content {
+    .filter-wrapper {
       display: flex;
       gap: 16px;
-      align-items: flex-end;
+      align-items: center;
       flex-wrap: wrap;
     }
 
-    .filter-group {
+    .search-box {
       flex: 1;
-      min-width: 200px;
-    }
-
-    .reset-btn {
-      height: 56px;
+      min-width: 250px;
+      position: relative;
       display: flex;
       align-items: center;
-      gap: 8px;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      color: var(--text-muted);
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      pointer-events: none;
+    }
+
+    .minimal-input {
+      width: 100%;
+      height: 40px;
+      padding: 0 16px 0 40px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      background: #ffffff;
+      font-size: 14px;
+      color: var(--text-main);
+      font-family: inherit;
+      transition: all var(--transition);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .minimal-input:focus {
+      outline: none;
+      border-color: #94a3b8;
+      box-shadow: 0 0 0 2px rgba(100, 116, 139, 0.1);
+    }
+
+    .filter-controls {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    /* Custom Select Styles */
+    .custom-select-container {
+      position: relative;
+      min-width: 160px;
+    }
+
+    .custom-select-trigger {
+      width: 100%;
+      height: 40px;
+      padding: 0 12px 0 16px;
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-main);
+      transition: all var(--transition);
+    }
+
+    .custom-select-trigger:hover, .custom-select-trigger.active {
+      border-color: #94a3b8;
+    }
+
+    .custom-select-trigger.active {
+      box-shadow: 0 0 0 2px rgba(100, 116, 139, 0.1);
+    }
+
+    .dropdown-icon {
+      color: var(--text-muted);
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      transition: transform var(--transition);
+    }
+
+    .dropdown-icon.rotated {
+      transform: rotate(180deg);
+    }
+
+    .custom-select-menu {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      padding: 6px;
+      z-index: 50;
+      animation: fadeIn 0.15s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .custom-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      color: var(--text-main);
+      transition: background var(--transition);
+      user-select: none;
+    }
+
+    .custom-option:hover {
+      background: #f1f5f9;
+    }
+
+    .custom-option.selected {
+      background: #f8fafc;
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+
+    .check-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      color: var(--primary-color);
+    }
+
+    .clear-btn {
+      color: var(--text-muted) !important;
+      font-weight: 500 !important;
+      height: 40px !important;
+    }
+
+    .clear-btn:hover {
+      color: var(--text-main) !important;
+      background: #f1f5f9 !important;
     }
 
     @media (max-width: 768px) {
-      .filter-content {
+      .filter-wrapper {
         flex-direction: column;
-        gap: 12px;
+        align-items: stretch;
       }
-
-      .filter-group {
+      .search-box {
         width: 100%;
-        min-width: unset;
       }
-
-      .reset-btn {
-        width: 100%;
+      .filter-controls {
+        flex-wrap: wrap;
+      }
+      .custom-select-container {
+        flex: 1;
+        min-width: 140px;
       }
     }
   `]
@@ -116,6 +259,41 @@ export class FilterPanelComponent {
   selectedPriority: TaskPriority | null = null;
   selectedStatus: TaskStatus | null = null;
   searchTerm: string = '';
+
+  isPriorityOpen = false;
+  isStatusOpen = false;
+
+  constructor(private elementRef: ElementRef) {}
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (!this.elementRef.nativeElement.contains(event.target)) {
+      this.isPriorityOpen = false;
+      this.isStatusOpen = false;
+    }
+  }
+
+  togglePriority() {
+    this.isPriorityOpen = !this.isPriorityOpen;
+    this.isStatusOpen = false;
+  }
+
+  toggleStatus() {
+    this.isStatusOpen = !this.isStatusOpen;
+    this.isPriorityOpen = false;
+  }
+
+  selectPriority(priority: TaskPriority | null) {
+    this.selectedPriority = priority;
+    this.isPriorityOpen = false;
+    this.onFilterChange();
+  }
+
+  selectStatus(status: TaskStatus | null) {
+    this.selectedStatus = status;
+    this.isStatusOpen = false;
+    this.onFilterChange();
+  }
 
   onFilterChange(): void {
     const filters: TaskFilterOptions = {
@@ -131,6 +309,10 @@ export class FilterPanelComponent {
     this.selectedStatus = null;
     this.searchTerm = '';
     this.onFilterChange();
+  }
+
+  hasActiveFilters(): boolean {
+    return !!this.selectedPriority || !!this.selectedStatus || !!this.searchTerm;
   }
 
   formatStatus(status: TaskStatus): string {
