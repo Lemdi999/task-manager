@@ -1,277 +1,107 @@
-# Task Manager Application
+# Task Flow Pro - Modern Task Manager
 
-A comprehensive Task Manager web application built with Angular, featuring task creation, editing, deletion, and intelligent filtering capabilities.
+A premium, minimalist Task Management application built with Angular 18. This application focuses on a clean "SaaS-style" aesthetic, providing an intuitive and high-performance user experience for managing daily tasks.
 
-## Features
+## ✨ Key Features
 
-### Task Management
-- **Create Tasks**: Add new tasks with title, description, due date, priority, and status
-- **View Tasks**: Display all tasks in a responsive card-based grid layout
-- **Edit Tasks**: Update existing task details through an intuitive dialog form
-- **Delete Tasks**: Remove tasks with confirmation dialog
-- **Task Display**: Each task shows title, description, due date, priority badge, and status badge
+### 📋 Professional Task Management
+- **Full CRUD Operations**: Create, view, update, and delete tasks with ease.
+- **Rich Task Metadata**: Every task tracks title, detailed description, due date, priority, and status.
+- **Interactive UI**: Modal-based creation and editing for a focused workflow.
+- **Automatic Persistence**: Real-time synchronization with Browser Local Storage ensures your data persists across sessions.
 
-### Filtering & Search
-- **Filter by Priority**: Low, Medium, High priority levels
-- **Filter by Status**: Pending, In Progress, Completed status
-- **Search**: Full-text search across task titles and descriptions
-- **Combined Filters**: Apply multiple filters simultaneously
-- **Clear Filters**: Reset all filters with one click
+### 🔍 Advanced Filtering & Search
+- **Full-Text Search**: Instantly find tasks by searching through titles and descriptions.
+- **Custom SaaS Dropdowns**: High-performance, custom-built select menus for Priority and Status filtering (replacing standard browser selects).
+- **Multi-Filter Logic**: Combine priority, status, and search terms to find exactly what you need.
+- **One-Click Reset**: Quickly clear all filters to return to your full task list.
 
-### Data Persistence
-- **Local Storage**: Tasks are automatically saved to browser LocalStorage
-- **Persistent Sessions**: Tasks persist between browser sessions
-- **Automatic Sync**: Real-time synchronization with storage
+### 🎨 Clean SaaS Aesthetic
+- **Minimalist Design**: Inspired by modern tools like Linear and Vercel. 
+- **Premium Typography**: Uses the **Inter** font family for maximum legibility and a sharp professional feel.
+- **Monochromatic Palette**: A refined grayscale color system with strategic use of subtle pastel accents.
+- **Crisp UI Components**: 1px borders, subtle drop shadows, and plenty of whitespace for a non-cluttered workspace.
+- **Fully Responsive**: Identical premium experience across mobile, tablet, and desktop devices.
 
-### User Interface
-- **Material Design**: Built with Angular Material components
-- **Responsive Layout**: Fully responsive design for desktop, tablet, and mobile
-- **Material Icons**: Professional icon set for intuitive navigation
-- **Material Theme**: Customizable color scheme with indigo primary and pink accent colors
-- **Dialog Forms**: Modal dialogs for creating and editing tasks
-- **Empty State**: User-friendly message when no tasks exist
-- **Task Cards**: Visually distinctive cards with priority-based left border colors
-
-### Testing
-- **Unit Tests**: Comprehensive test coverage for all services and components
-- **Service Tests**: CRUD operations, filtering, and storage persistence
-- **Component Tests**: Form validation, UI interactions, and event emissions
-- **Test Coverage**: Aim for 80%+ code coverage
-
-## Project Structure
+## 🏗 Project Architecture
 
 ```
 src/
 ├── app/
 │   ├── models/
-│   │   └── task.model.ts           # Task interfaces and enums
+│   │   └── task.model.ts           # Type-safe interfaces and enums
 │   ├── services/
-│   │   ├── task.service.ts         # Task management service
-│   │   └── task.service.spec.ts    # Service tests
+│   │   ├── task.service.ts         # Centralized state & storage logic
+│   │   └── task.service.spec.ts    # Service logic tests
 │   ├── components/
-│   │   ├── task-list/
-│   │   │   ├── task-list.component.ts
-│   │   │   └── task-list.component.spec.ts
-│   │   ├── task-form/
-│   │   │   ├── task-form.component.ts
-│   │   │   └── task-form.component.spec.ts
-│   │   ├── task-card/
-│   │   │   ├── task-card.component.ts
-│   │   │   └── task-card.component.spec.ts
-│   │   ├── filter-panel/
-│   │   │   ├── filter-panel.component.ts
-│   │   │   └── filter-panel.component.spec.ts
-│   │   └── empty-state/
-│   │       └── empty-state.component.ts
-│   └── app.component.ts            # Root component
-├── main.ts                         # Application entry point
-├── index.html                      # HTML template
-└── styles.scss                     # Global styles
+│   │   ├── task-list/              # Main dashboard container
+│   │   ├── task-form/              # Creation/Edit modal dialog
+│   │   ├── task-card/              # Individual task presentation
+│   │   ├── filter-panel/           # Custom filter controls & dropdowns
+│   │   └── empty-state/            # Null-data placeholder
+│   └── app.component.ts            # Layout shell & navigation
+├── main.ts                         # App entry point
+└── styles.css                      # Modern SaaS CSS Design System
 ```
 
-## Installation
+## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 18+ and npm
+- **Node.js**: v18.0.0 or higher
+- **Package Manager**: npm or pnpm
 
-### Setup
-```bash
-# Install dependencies
-npm install
+### Installation & Setup
 
-# Start development server
-npm start
+1. **Clone and Install**
+   ```bash
+   git clone <repository-url>
+   cd task-manager-application
+   npm install
+   ```
 
-# Build for production
-npm run build
+2. **Run Development Server**
+   ```bash
+   npm start
+   ```
+   Open [http://localhost:4200](http://localhost:4200) in your browser.
 
-# Run tests
-npm test
-```
+3. **Run Unit Tests**
+   ```bash
+   npm test
+   ```
 
-The application will run on `http://localhost:4200/`
+## 🛠 Tech Stack
 
-## Usage
+- **Framework**: Angular 18 (Standalone Components)
+- **Language**: TypeScript
+- **Styling**: Vanilla CSS (Custom SaaS Design Tokens)
+- **UI Components**: Angular Material (Base) + Custom Custom Components
+- **State Management**: Reactive RxJS Observables
+- **Data Store**: LocalStorage API
+- **Testing**: Jasmine & Karma
 
-### Creating a Task
-1. Click the "New Task" button in the header
-2. Fill in the task details:
-   - **Title**: Brief task name (minimum 3 characters)
-   - **Description**: Detailed task description (minimum 10 characters)
-   - **Due Date**: Select a date using the date picker
-   - **Priority**: Choose Low, Medium, or High
-   - **Status**: Select Pending, In Progress, or Completed
-3. Click "Create" to save the task
+## 📝 Usage Guide
 
-### Editing a Task
-1. Click the edit icon on any task card
-2. Modify the task details in the dialog
-3. Click "Update" to save changes
+### Task Statuses
+- `PENDING`: Not yet started.
+- `IN PROGRESS`: Currently being addressed.
+- `COMPLETED`: Successfully finished.
 
-### Deleting a Task
-1. Click the delete icon on any task card
-2. Confirm the deletion in the popup dialog
+### Priority Levels
+- `LOW`: Standard tasks (Slate dot indicator).
+- `MEDIUM`: Important tasks (Orange dot indicator).
+- `HIGH`: Critical tasks (Red dot indicator).
 
-### Filtering Tasks
-1. Use the filter panel at the top:
-   - **Priority dropdown**: Filter by task priority
-   - **Status dropdown**: Filter by task status
-   - **Search input**: Search by title or description
-2. Filters apply in real-time as you select options
-3. Click "Clear Filters" to reset all filters
+### Overdue Alerts
+Tasks that pass their due date without being marked as `COMPLETED` will automatically display their date in **red** to capture your attention.
 
-## Task Model
+## 🧪 Testing Overview
 
-### TaskPriority
-- `low`: Low priority
-- `medium`: Medium priority
-- `high`: High priority
+The project maintains high test coverage for core business logic:
+- **TaskService**: Validates LocalStorage sync, CRUD math, and filtering logic.
+- **FilterPanel**: Ensures custom dropdowns and search inputs trigger correct filtering events.
+- **TaskForm**: Validates user inputs (minimum lengths for title/description) and date selection.
+- **TaskCard**: Verifies correct status/priority badge rendering.
 
-### TaskStatus
-- `pending`: Task not yet started
-- `in-progress`: Task currently being worked on
-- `completed`: Task finished
-
-### Task Interface
-```typescript
-interface Task {
-  id: string;                    // Unique identifier
-  title: string;                 // Task title
-  description: string;           // Task description
-  dueDate: Date | string;       // Due date
-  priority: TaskPriority;       // Task priority level
-  status: TaskStatus;           // Task status
-  createdAt: Date | string;     // Creation timestamp
-  updatedAt: Date | string;     // Last update timestamp
-}
-```
-
-## Technologies Used
-
-### Frontend Framework
-- **Angular 18**: Modern web application framework
-- **TypeScript**: Type-safe JavaScript
-- **Angular Material 18**: Professional UI component library
-- **RxJS**: Reactive programming library
-
-### Styling
-- **SCSS**: Advanced CSS preprocessor
-- **Material Theme**: Customizable Material Design theme
-
-### Testing
-- **Jasmine**: JavaScript testing framework
-- **Karma**: Test runner
-- **Angular Testing Utilities**: Testing components and services
-
-### Storage
-- **LocalStorage API**: Client-side data persistence
-
-## Component Details
-
-### AppComponent
-Root component that sets up the toolbar and contains the task list.
-
-### TaskListComponent
-Main container component that:
-- Displays all tasks
-- Handles task creation dialog
-- Manages task editing
-- Handles task deletion with confirmation
-
-### TaskFormComponent
-Modal dialog component for:
-- Creating new tasks
-- Editing existing tasks
-- Form validation
-- Input constraints
-
-### TaskCardComponent
-Presentational component that displays:
-- Task title and description
-- Priority badge with color coding
-- Status badge with color coding
-- Due date
-- Edit and delete actions
-
-### FilterPanelComponent
-Filter control component providing:
-- Priority dropdown selector
-- Status dropdown selector
-- Search input field
-- Clear filters button
-
-### EmptyStateComponent
-Placeholder component shown when no tasks match current filters.
-
-## CSS Styling
-
-### Task Card Priority Colors
-- **Low**: Green border (#4caf50)
-- **Medium**: Orange border (#ff9800)
-- **High**: Red border (#f44336)
-
-### Status Badge Colors
-- **Pending**: Blue background
-- **In Progress**: Orange background
-- **Completed**: Green background
-
-### Responsive Design
-- **Desktop**: Grid layout with multiple columns
-- **Tablet**: 2-column grid
-- **Mobile**: Single column layout
-
-## Testing
-
-### Running Tests
-```bash
-npm test
-```
-
-### Test Files
-- `task.service.spec.ts` (333 lines): Service logic tests
-- `task-list.component.spec.ts` (116 lines): List component tests
-- `task-form.component.spec.ts` (192 lines): Form component tests
-- `task-card.component.spec.ts` (137 lines): Card component tests
-- `filter-panel.component.spec.ts` (132 lines): Filter panel tests
-
-### Test Coverage
-- CRUD operations (Create, Read, Update, Delete)
-- Filtering and search functionality
-- Form validation
-- Component interactions
-- LocalStorage persistence
-
-## Browser Support
-
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
-
-## Performance Optimizations
-
-- **Standalone Components**: Reduced bundle size
-- **OnPush Change Detection**: Optimized rendering
-- **RxJS Operators**: Efficient data transformation
-- **Lazy Loading**: Components loaded on demand
-
-## Future Enhancements
-
-- Task categories/tags
-- Task duplication
-- Recurring tasks
-- Task notes/comments
-- Dark mode support
-- Export to CSV/PDF
-- Cloud synchronization
-- Collaborative task management
-- Task reminders/notifications
-- Analytics dashboard
-
-## License
-
-MIT
-
-## Support
-
-For issues or questions, please check the test files or review the component implementations for detailed usage examples.
+## 📜 License
+This project is licensed under the MIT License.
